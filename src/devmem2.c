@@ -78,6 +78,7 @@ int writemem(char* address, char* value, int access_type)
     }
 
 
+    virt_addr = map_base + (target & MAP_MASK);
     writeval = strtoul(value, 0, 0);
     switch(access_type)
     {
