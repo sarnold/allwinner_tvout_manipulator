@@ -21,13 +21,15 @@
 #include <sys/types.h>
 #include <sys/mman.h>
 
+#include "devmem2.h"
+
 #define MAP_SIZE 4096UL
 #define MAP_MASK (MAP_SIZE - 1)
 
 static void ERROR(char* custom)
 {
     fprintf(stderr, "Error: %s \n", custom);
-    fprintf(stderr, "Error Nr: %d, %s\n",
+    fprintf(stderr, "Info: %d, %s\n",
             errno, strerror(errno));
 }
 

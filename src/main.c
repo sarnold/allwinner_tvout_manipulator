@@ -4,10 +4,10 @@
 
 int main()
 {
-    unsigned long readfrommemory = 0;
+    unsigned long *readfrommemory = 0;
 
     readmem("0x01E00130", 'w', readfrommemory);
 
-    printf("Value: 0x%X", (unsigned int)readfrommemory);
+    printf("Value: 0x%X \n", (unsigned int)readfrommemory);
     return 0;
 }

@@ -14,7 +14,7 @@
 
 int writemem(char* address, char* value, int access_type);
 
-int readmem(char* address, int access_type, unsigned long read_result);
+int readmem(char* address, int access_type, unsigned long *result);
 
 
 #endif // DEVMEM2_H_INCLUDED
