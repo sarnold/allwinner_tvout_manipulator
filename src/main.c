@@ -22,10 +22,12 @@ int main(int argc, char **argv)
     //Print usage message
     if(argc != 3)
     {
+        fprintf(stdout, "++++++++++++++++++++++++++++++\n");
         fprintf(stdout, "Usage: tvout <move x> <move y>\n");
         fprintf(stdout, "The parameter values should be in px.\n\n");
-        fprintf(stdout, "This program was created for the Armbian Project.");
+        fprintf(stdout, "This program was created for the Armbian Project.\n");
         fprintf(stdout, "(c) 2017, Daniel G.\n");
+        fprintf(stdout, "++++++++++++++++++++++++++++++\n");
         return EXIT_SUCCESS;
     }
 
