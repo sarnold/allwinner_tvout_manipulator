@@ -15,22 +15,22 @@
 /// \brief This function allows writing to memory
 ///        on the specified address.
 ///
-/// \param char* Address to write to
-/// \param char* Value to write
+/// \param unsigned long Address to write to
+/// \param unsigned long  Value to write
 /// \param int Access type, should be 'w' (word),
 ///        'h' (halfword), 'b'(byte)
 /////////////////////////////////////////////////
-int writemem(char* address, char* value, int access_type);
+int writemem(unsigned long address, unsigned long  writeval, int access_type);
 
 /////////////////////////////////////////////////
 /// \brief This function allows reading the memory
 ///        on the specified address.
 ///
-/// \param char* Address to read from
+/// \param unsigned long Address to read from
 /// \param int Access type, should be 'w' (word),
 ///        'h' (halfword), 'b'(byte)
 /// \param unsigned long* pointer result variable
 /////////////////////////////////////////////////
-int readmem(char* address, int access_type, unsigned long *result);
+int readmem(unsigned long address, int access_type, unsigned long *result);
 
 #endif // DEVMEM2_H_INCLUDED

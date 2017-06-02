@@ -47,21 +47,20 @@ static void ERROR(char* custom)
 /// \brief This function allows writing to memory
 ///        on the specified address.
 ///
-/// \param char* Address to write to
-/// \param char* Value to write
+/// \param unsigned long Address to write to
+/// \param unsigned long Value to write
 /// \param int Access type, should be 'w' (word),
 ///        'h' (halfword), 'b'(byte)
 /////////////////////////////////////////////////
-int writemem(char* address, char* value, int access_type)
+int writemem(unsigned long address, unsigned long writeval, int access_type)
 {
     int fd;
     void *map_base = 0;
     void *virt_addr = 0;
-    unsigned long writeval = 0;
 
-    off_t target = strtoul(address, 0, 0);
+    off_t target = address;
 
-
+    // Try to open /dev/mem
     if((fd = open("/dev/mem", O_RDWR | O_SYNC)) == -1)
     {
         ERROR("Opening /dev/mem/ failed!");
@@ -71,15 +70,18 @@ int writemem(char* address, char* value, int access_type)
     // Map one page
     map_base = mmap(0, MAP_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, target & ~MAP_MASK);
 
+    // Check if mapping was successful
     if(map_base == (void *) -1)
     {
+        //Print error on failure
         ERROR("Mapping Memory Page Failed!");
         return EXIT_FAILURE;
     }
 
-
+    //calculate virtual address
     virt_addr = map_base + (target & MAP_MASK);
-    writeval = strtoul(value, 0, 0);
+
+    //write value to memory
     switch(access_type)
     {
     case 'b':
@@ -96,7 +98,7 @@ int writemem(char* address, char* value, int access_type)
         break;
     }
 
-
+    //unmap memory
     if(munmap(map_base, MAP_SIZE) == -1)
     {
         ERROR("Unmapping Memory Page Failed!");
@@ -116,15 +118,15 @@ int writemem(char* address, char* value, int access_type)
 ///        'h' (halfword), 'b'(byte)
 /// \param unsigned long* pointer result variable
 /////////////////////////////////////////////////
-int readmem(char* address, int access_type, unsigned long *result)
+int readmem(unsigned long address, int access_type, unsigned long *result)
 {
     int fd;
     void *map_base, *virt_addr;
-    off_t target;
     unsigned long read_result = 0;
 
-    target = strtoul(address, 0, 0);
+    off_t target = address;
 
+    //check if result variable is a nullpointer
     if(result == NULL)
     {
         //Print error on failure
@@ -151,7 +153,10 @@ int readmem(char* address, int access_type, unsigned long *result)
         return EXIT_FAILURE;
     }
 
+    //calculate virtual address
     virt_addr = map_base + (target & MAP_MASK);
+
+    //read value
     switch(access_type)
     {
     case 'b':
@@ -168,12 +173,14 @@ int readmem(char* address, int access_type, unsigned long *result)
         break;
     }
 
+    // unmap memory
     if(munmap(map_base, MAP_SIZE) == -1)
     {
         ERROR("Unmapping Memory Page Failed!");
         return EXIT_FAILURE;
     }
 
+    // return result
     *result = read_result;
 
     close(fd);
