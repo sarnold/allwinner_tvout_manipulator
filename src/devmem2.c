@@ -3,8 +3,8 @@
 // Author: Jan-Derk Bakker, Daniel Giritzer
 // Date: 2017-06-02
 // Description: Simple module to read/write from/to any location in memory.
-// Remarks: -
-// Revision: 1
+// Remarks: assumes a 4k page size and that sizeof(unsigned long) == 4
+// Revision: 1.2
 // Copyright (C) 2000, Jan-Derk Bakker (J.D.Bakker@its.tudelft.nl)
 // Copyright (C) 2017, Daniel Giritzer (giri@nwrk.biz)
 ///////////////////////////////////////////////////////////////////////////
@@ -26,13 +26,32 @@
 #define MAP_SIZE 4096UL
 #define MAP_MASK (MAP_SIZE - 1)
 
+
+/////////////////////////////////////////////////
+/// \brief This function is called by the module
+///        if an error occurs.
+///
+/// \param char* Custom error Message.
+/////////////////////////////////////////////////
 static void ERROR(char* custom)
 {
+    //print custom error message
     fprintf(stderr, "Error: %s \n", custom);
+
+    //print further information
     fprintf(stderr, "Info: %d, %s\n",
             errno, strerror(errno));
 }
 
+/////////////////////////////////////////////////
+/// \brief This function allows writing to memory
+///        on the specified address.
+///
+/// \param char* Address to write to
+/// \param char* Value to write
+/// \param int Access type, should be 'w' (word),
+///        'h' (halfword), 'b'(byte)
+/////////////////////////////////////////////////
 int writemem(char* address, char* value, int access_type)
 {
     int fd;
@@ -87,6 +106,15 @@ int writemem(char* address, char* value, int access_type)
     return EXIT_SUCCESS;
 }
 
+/////////////////////////////////////////////////
+/// \brief This function allows reading the memory
+///        on the specified address.
+///
+/// \param char* Address to read from
+/// \param int Access type, should be 'w' (word),
+///        'h' (halfword), 'b'(byte)
+/// \param unsigned long* pointer result variable
+/////////////////////////////////////////////////
 int readmem(char* address, int access_type, unsigned long *result)
 {
     int fd;
