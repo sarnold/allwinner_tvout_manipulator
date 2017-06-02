@@ -12,7 +12,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <string.h>
 #include <errno.h>
 #include <signal.h>
 #include <fcntl.h>
@@ -113,7 +112,7 @@ int writemem(unsigned long address, unsigned long writeval, int access_type)
 /// \brief This function allows reading the memory
 ///        on the specified address.
 ///
-/// \param char* Address to read from
+/// \param unsigned long Address to read from
 /// \param int Access type, should be 'w' (word),
 ///        'h' (halfword), 'b'(byte)
 /// \param unsigned long* pointer result variable
