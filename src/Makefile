@@ -29,7 +29,7 @@ LD = g++
 WINDRES = windres
 
 INC =
-CFLAGS = -Wall -fexceptions -std=c++11
+CFLAGS = -Wall -fexceptions
 RESINC =
 LIBDIR =
 LIB =
@@ -93,7 +93,7 @@ out_debug: before_debug $(OBJ_DEBUG) $(DEP_DEBUG)
 	$(LD) $(LDFLAGS_DEBUG) $(LIBDIR_DEBUG) $(OBJ_DEBUG) $(LIB_DEBUG) -o $(OUT_DEBUG)
 
 $(OBJDIR_DEBUG)/%.o: %.c
-	$(CXX) $(CFLAGS_DEBUG) $(INC_DEBUG) -c $< -D_DEBUG -o $@
+	$(CC) $(CFLAGS_DEBUG) $(INC_DEBUG) -c $< -D_DEBUG -o $@
 
 clean_debug cleanDebug:
 	rm -f $(OBJ_DEBUG) $(OUT_DEBUG)
@@ -114,7 +114,7 @@ out_release: before_release $(OBJ_RELEASE) $(DEP_RELEASE)
 	$(LD) $(LDFLAGS_RELEASE) $(LIBDIR_RELEASE) $(OBJ_RELEASE) $(LIB_RELEASE) -o $(OUT_RELEASE)
 
 $(OBJDIR_RELEASE)/%.o: %.c
-	$(CXX) $(CFLAGS_RELEASE) $(INC_RELEASE) -c $< -o $@
+	$(CC) $(CFLAGS_RELEASE) $(INC_RELEASE) -c $< -o $@
 
 clean_release cleanRelease:
 	rm -f $(OBJ_RELEASE) $(OUT_RELEASE)
