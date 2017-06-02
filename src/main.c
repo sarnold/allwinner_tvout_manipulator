@@ -8,6 +8,6 @@ int main()
 
     readmem("0x01E00130", 'w', readfrommemory);
 
-    printf("Value: 0x%X", readfrommemory);
+    printf("Value: 0x%X", (unsigned int)readfrommemory);
     return 0;
 }

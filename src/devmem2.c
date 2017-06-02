@@ -85,13 +85,21 @@ int writemem(char* address, char* value, int access_type)
     return EXIT_SUCCESS;
 }
 
-int readmem(char* address, int access_type, unsigned long read_result)
+int readmem(char* address, int access_type, unsigned long *result)
 {
     int fd;
     void *map_base, *virt_addr;
     off_t target;
+    unsigned long read_result = 0;
 
     target = strtoul(address, 0, 0);
+
+    if(result == NULL)
+    {
+        //Print error on failure
+        ERROR("Result Parameter is a nullpointer!");
+        return EXIT_FAILURE;
+    }
 
 
     // Try to open /dev/mem
@@ -134,6 +142,8 @@ int readmem(char* address, int access_type, unsigned long read_result)
         ERROR("Unmapping Memory Page Failed!");
         return EXIT_FAILURE;
     }
+
+    *result = read_result;
 
     close(fd);
     return EXIT_SUCCESS;
