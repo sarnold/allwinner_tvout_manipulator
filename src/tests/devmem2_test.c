@@ -16,10 +16,10 @@ int main()
     unsigned long readfrommemory = 0;
 
     //Testing writemem
-    writemem("0x01E00130", "0x10140025", 'w');
+    writemem(0x01E00130, 0x10140025, 'w');
 
     //Testing readmem
-    readmem("0x01E00130", 'w', &readfrommemory);
+    readmem(0x01E00130, 'w', &readfrommemory);
 
     //Print read value to stdout
     printf("Value: 0x%X \n", (unsigned int)readfrommemory);
