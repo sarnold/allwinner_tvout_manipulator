@@ -15,34 +15,51 @@
 #include "devmem2.h"
 #include "tvout.h"
 
+/////////////////////////////////////////////////
+/// \brief This function gets called by the program
+///        to print the usage message.
+///
+/// \param FILE* output file descriptor
+/////////////////////////////////////////////////
 void PrintUsageMessage(FILE* output)
 {
-    fprintf(output, "++++++++++++++++++++++++++++++\n");
-    fprintf(output, "Usage: tvout [-m [-x val] [-y val]] \n\n");
-    fprintf(output, "-m \t move \n");
-    fprintf(output, "-x \t vertical offset in px \n");
-    fprintf(output, "-x \t horizontal offset in px \n");
-    fprintf(output, "\nThis program was created for the Armbian Project.\n");
-    fprintf(output, "(c) 2017, Daniel G.\n");
-    fprintf(output, "++++++++++++++++++++++++++++++\n");
+    fprintf(output, "++++++++++++++++++++++++++++++++++++++++\n");
+    fprintf(output, "Usage: tvout [-m [-r][-x val] [-y val]] \n\n");
+    fprintf(output, "-m \t move the picture\n");
+    fprintf(output, "  -x \t vertical offset in px \n");
+    fprintf(output, "  -y \t horizontal offset in px \n");
+    fprintf(output, "  -r \t reset position \n");
+    fprintf(output, "\nThis program was created for the \nArmbian Project.\n");
+    fprintf(output, "(c) 2017, Daniel G. (giri@nwrk.biz)\n");
+    fprintf(output, "++++++++++++++++++++++++++++++++++++++++\n");
 }
 
+/////////////////////////////////////////////////
+/// \brief Main Program. Parses Commandline
+///        Parameters and writes user Input
+///        to the matching TV-Encoder registers.
+/////////////////////////////////////////////////
 int main(int argc, char **argv)
 {
-    bool mFlag = false;
-    bool xFlag = false;
+    bool mFlag = false; //move
+    bool xFlag = false; //y Offset
     char* xVal = 0;
-    bool yFlag = false;
+    bool yFlag = false; //x Offset
     char* yVal = 0;
-    char c;
+    bool rFlag = false; //reset Offset
+    int c;
 
+    //let us do the errorhandling
+    opterr = 0;
+
+    //check if there are any arguments
     if(argc < 2)
     {
         PrintUsageMessage(stdout);
     }
 
     // Use getopt to parse the cmd parameters
-    while ((c = getopt (argc, argv, "mx:y:?")) != -1)
+    while ((c = getopt (argc, argv, "mx:y:r")) != -1)
         switch (c)
         {
         case 'm':
@@ -55,6 +72,9 @@ int main(int argc, char **argv)
         case 'y':
             yFlag = true;
             yVal = optarg;
+            break;
+        case 'r':
+            rFlag = true;
             break;
         case '?':
             //Print usage message
@@ -70,26 +90,35 @@ int main(int argc, char **argv)
     {
         unsigned long to_write = 0;
 
-        // read current position
-        readmem(TV_ENCODER_RESYNC, 'w', &to_write);
-        if(xFlag)
+        if(rFlag)
         {
-            //Set new X value
-            to_write += strtoul(xVal, 0, 0) << X_REG_OFFSET;
+            //reset position
+            writemem(TV_ENCODER_RESYNC, to_write, 'w');
         }
+        else
+        {
+            // read current position
+            readmem(TV_ENCODER_RESYNC, 'w', &to_write);
+            if(xFlag)
+            {
+                //Set new X value
+                to_write += strtoul(xVal, 0, 0) << X_REG_OFFSET;
+            }
 
-        if(yFlag)
-        {
-            //Set new Y value
-            to_write += strtoul(yVal, 0, 0) << Y_REG_OFFSET;
+            if(yFlag)
+            {
+                //Set new Y value
+                to_write += strtoul(yVal, 0, 0) << Y_REG_OFFSET;
+            }
+            //write new position to register
+            writemem(TV_ENCODER_RESYNC, to_write, 'w');
         }
-        //write new position to register
-        writemem(TV_ENCODER_RESYNC, to_write, 'w');
     }
 
-    for (unsigned int index = optind; index < argc; index++)
+    unsigned int index = 0;
+    for (index = optind; index < argc; index++)
     {
-        printf ("Non-option argument %s\n", argv[index]);
+        printf ("Invalid argument %s\n", argv[index]);
     }
     return EXIT_SUCCESS;
 }
